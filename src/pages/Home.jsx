@@ -3,6 +3,8 @@ import Feed from "../components/right_side/Feed.jsx";
 import {useEffect, useState} from "react";
 import { useSelector } from 'react-redux';
 import axios from "axios";
+import WebSocketService from '../utils/websocket.js';  // Import the WebSocket service
+
 
 const Home = () => {
     const [selectedPerson, setSelectedPerson] = useState(null);  // Handle selected person ID directly
@@ -20,13 +22,21 @@ const Home = () => {
         setSelectedPerson(personId);  // Directly set the selected person ID
     };
 
+    // Initialize the WebSocket connection
+    useEffect(() => {
+        const wsService = WebSocketService.getInstance();
+
+        wsService.connect(userData.id);  // Connect to the WebSocket server
+
+    },[userData.id]);
+
     const base_url = import.meta.env.VITE_BASE_API_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${base_url}/messages/friends?user_id=${userData.id}`);  // Remove trailing space
-                const data =transformFriendsList(response.data);
+                const data = transformFriendsList(response.data);
                 setPersons(data);
             } catch (error) {
                 setError('Error fetching friends data');

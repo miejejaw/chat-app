@@ -1,34 +1,21 @@
 import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
-import formatTime from '../../utils/time_utils.js'; // Import the formatTime function
+import formatTime from '../../utils/time_utils.js';
 
 
-const ChatMessage = ({message, user}) => {
-    const userData = useSelector((state) => state.user.profile);
-    const currentUser = {
-        id: userData.id,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        message: "I need help with my memory.",
-        time: "18:46",
-        unread: 2,
-        profile_image_url: userData.profile_image_url
-    };
+const ChatMessage = ({message, user, same}) => {
 
     const isSelf = message.is_self;
 
     const userFullName = `${user.first_name} ${user.last_name}`;
-    const currentUserFullName = `${currentUser.first_name} ${currentUser.last_name}`;
 
-    // Format the message time
     const formattedTime = formatTime(message.time);
 
     return (
-        <div className={`flex items-end ${isSelf ? "justify-end" : "justify-start"} space-x-2`}>
+        <div className={`mt-1 flex items-end ${isSelf ? "justify-end" : "justify-start"} space-x-2`}>
 
             {/* For other user's message, display profile pic on the left */}
-            {!isSelf && (
+            {!isSelf && !same && (
                 <div
                     className={`${user.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
                     {user.profile_image_url !== "" ? (
@@ -42,8 +29,8 @@ const ChatMessage = ({message, user}) => {
             {/* Message bubble */}
             <div className={`${
                 isSelf
-                    ? "bg-light-green rounded-tr-xl rounded-tl-xl rounded-bl-xl" // Owner's message (right-aligned)
-                    : "bg-light-grey rounded-tr-xl rounded-tl-xl rounded-br-xl" // Other's message (left-aligned)
+                    ? `${same && "mr-[60px] rounded-br-xl"} bg-light-green rounded-tr-xl rounded-tl-xl rounded-bl-xl` // Owner's message (right-aligned)
+                    : `${same && "ml-[60px] rounded-bl-xl"} bg-light-grey rounded-tr-xl rounded-tl-xl rounded-br-xl` // Other's message (left-aligned)
                 } inline-block px-3 py-2 relative max-w-[55%] break-words`}>
                 <p className="text-rich-black mb-3 pr-16">{message.message}</p>
 
@@ -60,13 +47,13 @@ const ChatMessage = ({message, user}) => {
             </div>
 
             {/* For owner's message, display profile pic on the right */}
-            {isSelf && (
+            {isSelf && !same && (
                 <div
-                    className={`${currentUser.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-end`}>
-                    {currentUser.profile_image_url !== "" ? (
-                        <img src={currentUser.profile_image_url} alt="profile" className="w-full"/>
+                    className={`${user.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
+                    {user.profile_image_url !== "" ? (
+                        <img src={user.profile_image_url} alt="profile" className="w-full"/>
                     ) : (
-                        currentUserFullName[0] // Show the first letter of the current user's full name
+                        userFullName[0] // Show the first letter of the full name
                     )}
                 </div>
             )}
@@ -86,7 +73,8 @@ ChatMessage.propTypes = {
         first_name: PropTypes.string.isRequired,
         last_name: PropTypes.string.isRequired,
         profile_image_url: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    same: PropTypes.bool.isRequired
 };
 
 export default ChatMessage;
