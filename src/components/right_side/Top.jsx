@@ -8,7 +8,7 @@ const Top = ({user}) => {
     const lastSeenTime = formatTime(user.last_seen);
 
     return (
-        <section className='bg-white py-2 px-10 border-l-2 flex justify-between'>
+        <section className='bg-white h-20 py-2 px-10 border-l-2 flex justify-between'>
             <div className='flex'>
                 <div
                     className={`${user.profile_image_url === "" && "bg-light-green text-white text-xl"} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
