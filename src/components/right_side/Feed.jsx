@@ -23,7 +23,7 @@ const Feed = ({friend, id}) => {
     const wsService = WebSocketService.getInstance();
 
     wsService.addCallbacks(userInfo.id, (message) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => [message,...prevMessages]);
     });
 
     const sendMessage = () => {
@@ -68,10 +68,20 @@ const Feed = ({friend, id}) => {
             <Top user={friend}/>
 
             {/*chat messages*/}
-            <div className='px-20 mb-1 flex-grow overflow-y-scroll flex flex-col justify-end border-gray-300 border-t-2 border-l-2 space-y-1'>
-                {messages.map((message, index) => (
-                    <ChatMessage key={index} user={friend} message={message}/>
-                ))}
+            <div className='px-20 mb-1 flex-grow overflow-y-auto flex flex-col-reverse border-gray-300 border-t-2 border-l-2 space-y-1'>
+                {messages.map((message, i) => {
+                    // Check if the current message and the previous message are from the same user
+                    const isSameUser = i > 0 && messages[i - 1].is_self === message.is_self;
+
+                    return (
+                        <ChatMessage
+                            key={i}
+                            user={friend}
+                            message={message}
+                            same={isSameUser} // Pass the "same" prop based on the condition
+                        />
+                    );
+                })}
             </div>
 
             {/*message input bar*/}

@@ -36,7 +36,7 @@ const Home = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${base_url}/messages/friends?user_id=${userData.id}`);  // Remove trailing space
-                const data =transformFriendsList(response.data);
+                const data = transformFriendsList(response.data);
                 setPersons(data);
             } catch (error) {
                 setError('Error fetching friends data');
