@@ -5,18 +5,44 @@ import SendIcon from '@mui/icons-material/Send';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import ChatMessage from "./ChatMessage.jsx";
 import PropTypes from "prop-types";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
-const Feed = ({messages, user}) => {
+const Feed = ({friend, id}) => {
+
+    const[messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);  // To manage loading state for API request
+    const [error, setError] = useState(null);      // To handle errors during fetch
+
+
+    const base_url = import.meta.env.VITE_BASE_API_URL;
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // const response = await axios.get(`${base_url}/messages/friend/chats?user_id=${id}`);  // Remove trailing space
+                const response = await axios.get(`${base_url}/messages/friend/chats?user_id=${id}`);  // Remove trailing space
+                setMessages(response.data);
+                console.log(response.data)
+            } catch (error) {
+                setError('Error fetching friends data');
+                console.error("Error fetching data: ", error);
+            } finally {
+                setLoading(false);  // Stop loading regardless of success or failure
+            }
+        };
+
+        fetchData();
+    }, [base_url]);
 
     return (
         <section className='w-full h-full bg-opacity-85 bg-iceberg-blue flex flex-col'>
             {/*top section*/}
-            <Top user={user}/>
+            <Top user={friend}/>
 
             {/*chat messages*/}
             <div className='px-20 mb-4 flex-grow flex flex-col justify-end border-gray-300 border-t-2 border-l-2 space-y-1'>
                 {messages.map((message, index) => (
-                    <ChatMessage key={index} user={user} message={message}/>
+                    <ChatMessage key={index} user={friend} message={message}/>
                 ))}
             </div>
 
@@ -35,7 +61,7 @@ const Feed = ({messages, user}) => {
 }
 
 Feed.propTypes = {
-    messages: PropTypes.array.isRequired,
-    user: PropTypes.object.isRequired
+    id: PropTypes.number.isRequired,
+    friend: PropTypes.object.isRequired
 }
 export default Feed;
