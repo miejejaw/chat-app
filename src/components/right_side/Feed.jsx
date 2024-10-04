@@ -79,9 +79,9 @@ const Feed = ({friend, id}) => {
                 <AttachFileIcon fontSize='large' className='text-gray-400'/>
                 <input type='text' value={messageContent} onChange={(e) => handleMessageContent(e)} placeholder='Type a message' className='w-full h-full ml-2 outline-none text-rich-black'/>
                 <div className='flex space-x-2'>
-                        <SentimentSatisfiedAltIcon fontSize='large' className='w-10 h-10 text-gray-400'/>
-                        <MicIcon fontSize='large' className='text-gray-400'/>
-                        <SendIcon fontSize='large' className='text-iceberg-blue' onClick={()=> sendMessage()}/>
+                        <SentimentSatisfiedAltIcon fontSize='large' className='w-10 h-10 text-gray-400 hover:cursor-pointer'/>
+                        <MicIcon fontSize='large' className='text-gray-400 hover:cursor-pointer'/>
+                        <SendIcon fontSize='large' className='text-iceberg-blue hover:cursor-pointer' onClick={()=> sendMessage()}/>
                     </div>
             </div>
         </section>
