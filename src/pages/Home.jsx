@@ -5,25 +5,29 @@ import { useSelector } from 'react-redux';
 import axios from "axios";
 
 const Home = () => {
-    const [selectedPerson, setSelectedPerson] = useState(0);  // Handle selected person ID directly
-    const [persons, setPersons] = useState([]);
+    const [selectedPerson, setSelectedPerson] = useState(null);  // Handle selected person ID directly
+    const [persons, setPersons] = useState({});
     const [loading, setLoading] = useState(true);  // To manage loading state for API request
     const [error, setError] = useState(null);      // To handle errors during fetch
 
     const userData = useSelector((state) => state.user.profile);
 
-    // Conditionally render loading state for user profile
     if (!userData) {
         return <div>Loading user data...</div>;
     }
+    // Handle person selection
+    const handlePersonClick = (personId) => {
+        setSelectedPerson(personId);  // Directly set the selected person ID
+    };
 
     const base_url = import.meta.env.VITE_BASE_API_URL;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${base_url}/messages/friends?user_id=1`);  // Remove trailing space
-                setPersons(response.data);
+                const response = await axios.get(`${base_url}/messages/friends?user_id=${userData.id}`);  // Remove trailing space
+                const data =transformFriendsList(response.data);
+                setPersons(data);
             } catch (error) {
                 setError('Error fetching friends data');
                 console.error("Error fetching data: ", error);
@@ -35,10 +39,6 @@ const Home = () => {
         fetchData();
     }, [base_url]);  // Add base_url as dependency
 
-    // Handle person selection
-    const handlePersonClick = (personId) => {
-        setSelectedPerson(personId-1);  // Directly set the selected person ID
-    };
 
     // Conditional rendering for loading and error states
     if (loading) {
@@ -52,9 +52,23 @@ const Home = () => {
     return (
         <div className='flex w-screen h-screen bg-cover bg-center' style={{backgroundImage: "url('/chat-background.svg')"}}>
             <LeftSideBar persons={persons} onPersonClick={handlePersonClick}/>
-            <Feed friend={persons[selectedPerson].friend} id={persons[selectedPerson].friend.id}/>
+
+            {
+                selectedPerson === null ?
+                    <div className='w-full h-full bg-opacity-85 bg-iceberg-blue flex justify-center items-center text-lg text-white'>Select a person to chat</div> :
+                    <Feed friend={persons[selectedPerson].friend} id={persons[selectedPerson].friend.id}/>
+            }
         </div>
     );
 }
+
+const transformFriendsList = (friends) => {
+    const result = {};
+    friends.forEach(item => {
+        const friendId = item.friend.id; // Get the friend's ID
+        result[friendId] = item; // Assign the item under the friend's ID
+    });
+    return result;
+};
 
 export default Home;

@@ -44,8 +44,8 @@ const ChatMessage = ({message, user}) => {
                 isSelf
                     ? "bg-light-green rounded-tr-xl rounded-tl-xl rounded-bl-xl" // Owner's message (right-aligned)
                     : "bg-light-grey rounded-tr-xl rounded-tl-xl rounded-br-xl" // Other's message (left-aligned)
-            } inline-block px-3 py-2 relative max-w-[55%] break-words`}>
-                <p className="text-rich-black mb-3">{message.message}</p>
+                } inline-block px-3 py-2 relative max-w-[55%] break-words`}>
+                <p className="text-rich-black mb-3 pr-16">{message.message}</p>
 
                 {/* Timestamp */}
                 <span
@@ -76,8 +76,6 @@ const ChatMessage = ({message, user}) => {
 
 ChatMessage.propTypes = {
     message: PropTypes.shape({
-        first_name: PropTypes.string.isRequired, // 'first_name' is required and must be a string
-        last_name: PropTypes.string.isRequired,  // 'last_name' is required and must be a string
         message: PropTypes.string.isRequired, // 'message' is required and must be a string
         time: PropTypes.string.isRequired, // 'time' is required and must be a string
         profile_image_url: PropTypes.string, // 'profile_image_url' can be a string (optional)

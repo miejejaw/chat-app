@@ -20,7 +20,7 @@ const Feed = ({friend, id}) => {
         const fetchData = async () => {
             try {
                 // const response = await axios.get(`${base_url}/messages/friend/chats?user_id=${id}`);  // Remove trailing space
-                const response = await axios.get(`${base_url}/messages/friend/chats?user_id=1`);  // Remove trailing space
+                const response = await axios.get(`${base_url}/messages/friend/chats?user_id=${id}`);  // Remove trailing space
                 setMessages(response.data);
                 console.log(response.data)
             } catch (error) {
