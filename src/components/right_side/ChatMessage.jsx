@@ -1,13 +1,13 @@
 import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
-import formatTime from '../../utils/time_utils.js';
+import {formatTime} from '../../utils/time_utils.js';
+import {useSelector} from "react-redux";
 
 
-const ChatMessage = ({message, user, same}) => {
+const ChatMessage = ({message, friendProfile, same}) => {
 
+    const currentUser = useSelector((state) => state.user.profile);
     const isSelf = message.is_self;
-
-    const userFullName = `${user.first_name} ${user.last_name}`;
 
     const formattedTime = formatTime(message.time);
 
@@ -17,11 +17,11 @@ const ChatMessage = ({message, user, same}) => {
             {/* For other user's message, display profile pic on the left */}
             {!isSelf && !same && (
                 <div
-                    className={`${user.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
-                    {user.profile_image_url !== "" ? (
-                        <img src={user.profile_image_url} alt="profile" className="w-full"/>
+                    className={`${friendProfile.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
+                    {friendProfile.profile_image_url !== "" ? (
+                        <img src={friendProfile.profile_image_url} alt="profile" className="w-full"/>
                     ) : (
-                        userFullName[0] // Show the first letter of the full name
+                        `${friendProfile.first_name[0]}${friendProfile.last_name[0]}`
                     )}
                 </div>
             )}
@@ -49,11 +49,11 @@ const ChatMessage = ({message, user, same}) => {
             {/* For owner's message, display profile pic on the right */}
             {isSelf && !same && (
                 <div
-                    className={`${user.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
-                    {user.profile_image_url !== "" ? (
-                        <img src={user.profile_image_url} alt="profile" className="w-full"/>
+                    className={`${currentUser.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
+                    {currentUser.profile_image_url !== "" ? (
+                        <img src={currentUser.profile_image_url} alt="profile" className="w-full"/>
                     ) : (
-                        userFullName[0] // Show the first letter of the full name
+                        `${currentUser.first_name[0]}${currentUser.last_name[0]}`
                     )}
                 </div>
             )}
@@ -63,12 +63,12 @@ const ChatMessage = ({message, user, same}) => {
 
 ChatMessage.propTypes = {
     message: PropTypes.shape({
-        message: PropTypes.string.isRequired, // 'message' is required and must be a string
-        time: PropTypes.string.isRequired, // 'time' is required and must be a string
-        profile_image_url: PropTypes.string, // 'profile_image_url' can be a string (optional)
-        is_self: PropTypes.bool.isRequired, // 'is_self' is required and must be a boolean
+        message: PropTypes.string.isRequired,
+        time: PropTypes.string.isRequired,
+        profile_image_url: PropTypes.string,
+        is_self: PropTypes.bool.isRequired,
     }).isRequired,
-    user: PropTypes.shape({
+    friendProfile: PropTypes.shape({
         id: PropTypes.number.isRequired,
         first_name: PropTypes.string.isRequired,
         last_name: PropTypes.string.isRequired,

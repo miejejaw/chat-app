@@ -12,7 +12,6 @@ export const login = (username, password) => async (dispatch) => {
 
     } catch (err) {
         console.error('Login failed:', err);
-        // Optionally, dispatch a failure action here
     }
 };
 
