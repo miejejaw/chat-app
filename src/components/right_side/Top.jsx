@@ -2,7 +2,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import PropTypes from "prop-types";
-import formatTime from "../../utils/time_utils.js";
+import {formatTime} from "../../utils/time_utils.js";
 
 const Top = ({ person }) => {
     const lastSeenTime = formatTime(person.last_seen);

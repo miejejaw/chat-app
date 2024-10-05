@@ -1,6 +1,6 @@
 import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
-import formatTime from '../../utils/time_utils.js';
+import {formatTime} from '../../utils/time_utils.js';
 import {useSelector} from "react-redux";
 
 

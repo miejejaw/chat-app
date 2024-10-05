@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import formatTime from '../../utils/time_utils.js'; // Import the formatTime function
+import {formatTime} from '../../utils/time_utils.js'; // Import the formatTime function
 
 const PersonList = ({ person, onPersonClick }) => {
     const fullName = `${person.profile.first_name} ${person.profile.last_name}`;

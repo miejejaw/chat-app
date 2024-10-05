@@ -8,6 +8,8 @@ import PropTypes from "prop-types";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import WebSocketService from '../../utils/websocket.js';
+import {getFormattedDate} from "../../utils/time_utils.js";
+import React from 'react';
 
 
 const Feed = ({friend, id, messages, setMessages}) => {
@@ -62,19 +64,45 @@ const Feed = ({friend, id, messages, setMessages}) => {
 
             {/*chat messages*/}
             <div className='px-20 mb-1 flex-grow overflow-y-scroll flex flex-col-reverse border-gray-300 border-t-2 border-l-2 space-y-1'>
-                {messages.map((message, i) => {
-                    // Check if the current message and the previous message are from the same user
-                    const isSameUser = i > 0 && messages[i - 1].is_self === message.is_self;
+                {
+                    messages.map((message, i) => {
+                        // Check if the current message and the previous message are from the same user
+                        const isSameUser = i > 0 && messages[i - 1].is_self === message.is_self;
 
-                    return (
-                        <ChatMessage
-                            key={i}
-                            friendProfile={friend.profile}
-                            message={message}
-                            same={isSameUser} // Pass the "same" prop based on the condition
-                        />
-                    );
-                })}
+                        // Get date only from the time string
+                        const getDateOnly = (timeString) => new Date(timeString).toISOString().substring(0, 10);
+
+                        // Initialize isSameDate
+                        let isSameDate = null;
+
+                        // For the first message, just format the date
+                        if (i === messages.length - 1) {
+                            isSameDate = getFormattedDate(message.time);
+                        }
+                        // Compare the current message's date with the previous message's date
+                        else if (getDateOnly(message.time) !== getDateOnly(messages[i + 1].time)) {
+                            isSameDate = getFormattedDate(message.time);
+                        }
+
+                        return (
+                            <React.Fragment key={i}> {/* Use index as key here */}
+                                <ChatMessage
+                                    key={message.id || i} // Ensure each ChatMessage has a unique key
+                                    friendProfile={friend.profile}
+                                    message={message}
+                                    same={isSameUser}
+                                />
+                                {isSameDate && (
+                                    <div className='w-full flex justify-center'>
+                                        <div className='w-fit px-6 py-1 bg-gray-500 text-center text-gray-300 rounded-xl'>
+                                            {isSameDate}
+                                        </div>
+                                    </div>
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
+
             </div>
 
             {/*message input bar*/}
