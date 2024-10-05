@@ -12,6 +12,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
+    const[messages, setMessages] = useState([]);
 
     const userData = useSelector((state) => state.user.profile);
     const friends = useSelector((state) => state.friend.friends);
@@ -36,14 +37,13 @@ const Home = () => {
     }, [userData.id]);
 
     // listen for new messages
-    // useEffect(() => {
-    //     const wsService = WebSocketService.getInstance();
-    //
-    //     wsService.addCallbacks(userData.id, (newMessage) => {
-    //         dispatch(friendActions.updateFriendLastMessage(newMessage));
-    //     });
-    //
-    // }, [userData.id]);
+        const wsService = WebSocketService.getInstance();
+
+        wsService.addCallbacks(userData.id, (newMessage) => {
+            setMessages((prevMessages) => [newMessage,...prevMessages]);
+            dispatch(friendActions.updateFriendLastMessage(newMessage));
+        });
+
 
     // Conditional rendering for loading and error states
     if (loading) {
@@ -61,7 +61,12 @@ const Home = () => {
             {
                 selectedPerson === null ?
                     <div className='w-full h-full bg-opacity-85 bg-iceberg-blue flex justify-center items-center text-lg text-white'>Select a person to chat</div> :
-                    <Feed friend={friends[selectedPerson]} id={friends[selectedPerson].profile.id}/>
+                    <Feed
+                        friend={friends[selectedPerson]}
+                        id={friends[selectedPerson].profile.id}
+                        messages={messages}
+                        setMessages={setMessages}
+                    />
             }
         </div>
     );
