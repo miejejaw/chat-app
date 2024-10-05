@@ -63,7 +63,7 @@ const Feed = ({friend, id, messages, setMessages}) => {
             <Top person={friend}/>
 
             {/*chat messages*/}
-            <div className='px-20 mb-1 flex-grow overflow-y-scroll flex flex-col-reverse border-gray-300 border-t-2 border-l-2 space-y-1'>
+            <div className='px-20 mb-1 flex-grow overflow-y-scroll feed-scrollbar flex flex-col-reverse border-gray-300 border-t-2 border-l-2 space-y-1'>
                 {
                     messages.map((message, i) => {
                         // Check if the current message and the previous message are from the same user
@@ -94,7 +94,7 @@ const Feed = ({friend, id, messages, setMessages}) => {
                                 />
                                 {isSameDate && (
                                     <div className='w-full flex justify-center'>
-                                        <div className='w-fit px-6 py-1 bg-gray-500 text-center text-gray-300 rounded-xl'>
+                                        <div className='w-fit my-2 px-20 py-1 bg-gray-500 text-center text-gray-300 rounded-xl'>
                                             {isSameDate}
                                         </div>
                                     </div>
