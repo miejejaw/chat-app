@@ -23,7 +23,6 @@ class WebSocketService {
         };
 
         this.socketRef.onmessage = (event) => {
-            console.log("WebSocket message received:", event.data);
             this.socketNewMessage(event.data);
         };
 
@@ -46,10 +45,10 @@ class WebSocketService {
     // Handle incoming messages
     socketNewMessage(data) {
         const parsedData = JSON.parse(data);
-        const receiverId = parsedData.receiver_id;
+        const receiverId = parsedData.is_self ? parsedData.sender.id : parsedData.receiver_id;
 
         if (Object.keys(this.callbacks).length > 0) {
-            this.callbacks[receiverId](parsedData);  // Trigger callback for the receiver
+            this.callbacks[receiverId](parsedData);
         }
     }
 

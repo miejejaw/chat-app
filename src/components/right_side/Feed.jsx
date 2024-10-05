@@ -7,8 +7,9 @@ import ChatMessage from "./ChatMessage.jsx";
 import PropTypes from "prop-types";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {useSelector} from "react-redux";
-import WebSocketService from '../../utils/websocket.js';  // Import the WebSocket service
+import {useDispatch, useSelector} from "react-redux";
+import WebSocketService from '../../utils/websocket.js';
+import {friendActions} from "../../features/friends/friendSlice.js";
 
 
 const Feed = ({friend, id}) => {
@@ -18,12 +19,16 @@ const Feed = ({friend, id}) => {
     const[messageContent, setMessageContent] = useState('');
     // const [loading, setLoading] = useState(true);  // To manage loading state for API request
     // const [error, setError] = useState(null);      // To handle errors during fetch
+    const dispatch = useDispatch();
+
 
     // real-time connect
     const wsService = WebSocketService.getInstance();
 
-    wsService.addCallbacks(userInfo.id, (message) => {
-        setMessages((prevMessages) => [message,...prevMessages]);
+    wsService.addCallbacks(userInfo.id, (newMessage) => {
+        setMessages((prevMessages) => [newMessage,...prevMessages]);
+        dispatch(friendActions.updateFriendLastMessage(newMessage));
+
     });
 
     const sendMessage = () => {
@@ -31,7 +36,7 @@ const Feed = ({friend, id}) => {
         if(content === '') return;
 
         const message = {
-            receiver_id: friend.id,
+            receiver_id: friend.profile.id,
             content: content,
         };
 
@@ -65,7 +70,7 @@ const Feed = ({friend, id}) => {
     return (
         <section className='w-full h-full bg-opacity-85 bg-iceberg-blue flex flex-col'>
             {/*top section*/}
-            <Top user={friend}/>
+            <Top person={friend}/>
 
             {/*chat messages*/}
             <div className='px-20 mb-1 flex-grow overflow-y-auto flex flex-col-reverse border-gray-300 border-t-2 border-l-2 space-y-1'>
@@ -76,7 +81,7 @@ const Feed = ({friend, id}) => {
                     return (
                         <ChatMessage
                             key={i}
-                            user={friend}
+                            friendProfile={friend.profile}
                             message={message}
                             same={isSameUser} // Pass the "same" prop based on the condition
                         />
