@@ -9,9 +9,9 @@ export const login = (username, password) => async (dispatch) => {
 
         dispatch(loginSuccess({ access_token, refresh_token }));
         dispatch(setUserProfile(user));
-
     } catch (err) {
         console.error('Login failed:', err);
+        throw new Error('Login failed');
     }
 };
 

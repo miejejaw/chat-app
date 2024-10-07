@@ -3,39 +3,34 @@ import { login } from '../features/auth/authThunks';
 import { useDispatch } from 'react-redux';
 import {useNavigate} from "react-router-dom";
 
-
-
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const navigate = useNavigate();  // Initialize the hook
-
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         setError('');
         setLoading(true);
 
-
         if (username === '' || password === '') {
             setError('Please fill in all fields');
+            setLoading(false); // Reset loading state
             return;
         }
 
         try {
-            dispatch(login(username, password));
-            setLoading(false);
-
+            // Await the dispatch to handle the promise correctly
+            await dispatch(login(username, password));
             navigate('/');
         } catch (err) {
             console.error(err);
-
             setError('Login failed. Please check your credentials.');
-            setLoading(false);
+        } finally {
+            setLoading(false); // Ensure loading state is reset regardless of success or failure
         }
     };
 
@@ -44,13 +39,14 @@ const Login = () => {
             {/* Left Section */}
             <div className="w-2/3 flex items-center relative">
                 <div className="bg-white ml-32 p-8 rounded-md w-full max-w-md">
-                    {error &&
-                        <div className='bg-red-400 mb-2 h-8 rounded'>
-                            <p className='text-center text-white'>{error}</p>
-                        </div>
-                    }
-
                     <h2 className="text-2xl font-semibold text-center mb-6">Welcome Back!</h2>
+
+                    {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                             role="alert">
+                            <span className="block sm:inline">{error}</span>
+                        </div>
+                    )}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="username" className="block text-gray-700 mb-2">Username:</label>
@@ -88,13 +84,16 @@ const Login = () => {
 
                     <div className="flex justify-center mt-4">
                         <a href="#" className="mx-2">
-                            <img src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png" alt="Facebook" className="w-6 h-6"/>
+                            <img src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png" alt="Facebook"
+                                 className="w-6 h-6"/>
                         </a>
                         <a href="#" className="mx-2">
-                            <img src="https://img.icons8.com/ios-filled/50/000000/whatsapp.png" alt="WhatsApp" className="w-6 h-6"/>
+                            <img src="https://img.icons8.com/ios-filled/50/000000/whatsapp.png" alt="WhatsApp"
+                                 className="w-6 h-6"/>
                         </a>
                         <a href="#" className="mx-2">
-                            <img src="https://img.icons8.com/ios-filled/50/000000/telegram-app.png" alt="Telegram" className="w-6 h-6"/>
+                            <img src="https://img.icons8.com/ios-filled/50/000000/telegram-app.png" alt="Telegram"
+                                 className="w-6 h-6"/>
                         </a>
                     </div>
                 </div>
