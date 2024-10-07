@@ -10,13 +10,14 @@ import axios from "axios";
 import WebSocketService from '../../utils/websocket.js';
 import { getFormattedDate } from '../../utils/time_utils.js';
 import React from 'react';
-import Picker from '@emoji-mart/react'; // Correct import for emoji-mart v5+
-import data from '@emoji-mart/data';    // Import emoji data
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 const Feed = ({ friend, id, messages, setMessages }) => {
     const [messageContent, setMessageContent] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const emojiPickerRef = useRef(null); // Reference for emoji picker
+    const messagesEndRef = useRef(null); // Ref for scrolling
 
     const wsService = WebSocketService.getInstance();
 
@@ -31,6 +32,11 @@ const Feed = ({ friend, id, messages, setMessages }) => {
 
         wsService.sendMessage(message);
         setMessageContent('');
+
+        // Scroll to the bottom after sending the message
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({behavior: 'smooth'});
+        }
     };
 
     const handleMessageContent = (e) => {
@@ -75,6 +81,23 @@ const Feed = ({ friend, id, messages, setMessages }) => {
         fetchData();
     }, [base_url]);
 
+    // Keydown event listener for "Enter" to send a message
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        };
+
+        // Add event listener
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [messageContent]);
+
+
     return (
         <section className='w-full h-full bg-opacity-85 bg-iceberg-blue flex flex-col'>
             {/* Top section */}
@@ -82,51 +105,54 @@ const Feed = ({ friend, id, messages, setMessages }) => {
 
             {/* Chat messages */}
             <div className='px-20 mb-1 flex-grow overflow-y-scroll feed-scrollbar flex flex-col-reverse border-gray-300 border-t-2 border-l-2 space-y-1'>
-                {messages.map((message, i) => {
-                    const isSameUser = i > 0 && messages[i - 1].is_self === message.is_self;
+                {/* This div will help us scroll to the bottom */}
+                <div ref={messagesEndRef}/>
 
-                    const getDateOnly = (timeString) => new Date(timeString).toISOString().substring(0, 10);
+                {
+                    messages.map((message, i) => {
+                        const isSameUser = i > 0 && messages[i - 1].is_self === message.is_self;
 
-                    let isSameDate = null;
+                        const getDateOnly = (timeString) => new Date(timeString).toISOString().substring(0, 10);
 
-                    if (i === messages.length - 1) {
-                        isSameDate = getFormattedDate(message.time);
-                    } else if (getDateOnly(message.time) !== getDateOnly(messages[i + 1].time)) {
-                        isSameDate = getFormattedDate(message.time);
-                    }
+                        let isSameDate = null;
 
-                    return (
-                        <React.Fragment key={message.id || i}>
-                            <ChatMessage
-                                key={message.id || i}
-                                friendProfile={friend.profile}
-                                message={message}
-                                same={isSameUser}
-                            />
-                            {isSameDate && (
-                                <div className='w-full flex justify-center'>
-                                    <div className='w-fit my-2 px-20 py-1 bg-gray-500 text-center text-gray-300 rounded-xl'>
-                                        {isSameDate}
+                        if (i === messages.length - 1) {
+                            isSameDate = getFormattedDate(message.time);
+                        } else if (getDateOnly(message.time) !== getDateOnly(messages[i + 1].time)) {
+                            isSameDate = getFormattedDate(message.time);
+                        }
+
+                        return (
+                            <React.Fragment key={message.id || i}>
+                                <ChatMessage
+                                    key={message.id || i}
+                                    friendProfile={friend.profile}
+                                    message={message}
+                                    same={isSameUser}
+                                />
+                                {isSameDate && (
+                                    <div className='w-full flex justify-center'>
+                                        <div
+                                            className='w-fit my-2 px-20 py-1 bg-gray-500 text-center text-gray-300 rounded-xl'>
+                                            {isSameDate}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </React.Fragment>
-                    );
+                                )}
+                            </React.Fragment>
+                        );
                 })}
             </div>
 
+
             {/* Emoji Picker */}
             {showEmojiPicker && (
-                <div
-                    ref={emojiPickerRef} // Assign ref to emoji picker div
-                    style={{ position: 'absolute', bottom: '80px', right: '50px' }}
-                >
+                <div ref={emojiPickerRef} style={{position: 'absolute', bottom: '80px', right: '50px'}}>
                     <Picker data={data} onEmojiSelect={handleEmojiSelect} />
                 </div>
             )}
 
             {/* Message input bar */}
-            <div className='bg-white h-16 px-20 border-2 flex justify-between items-center'>
+            <div className='bg-white h-16 px-20 border-2 flex justify-between items-center flex-shrink-0'>
                 <AttachFileIcon fontSize='large' className='text-gray-400' />
 
                 {/* Input field */}

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import PersonList from "./PersonList.jsx";
 import {useSelector} from "react-redux";
 
-const LeftSideBar = ({ onPersonClick }) => {
+const LeftSideBar = ({onPersonClick, selectedPerson}) => {
     const friends = useSelector((state) => state.friend.friends);
 
     return (
@@ -17,6 +17,7 @@ const LeftSideBar = ({ onPersonClick }) => {
                             key={friends[id].profile.id}
                             person={friends[id]}
                             onPersonClick={onPersonClick}
+                            selectedPerson={selectedPerson}
                         />
                     ))
                 }
@@ -27,7 +28,8 @@ const LeftSideBar = ({ onPersonClick }) => {
 }
 
 LeftSideBar.propTypes = {
-    onPersonClick: PropTypes.func.isRequired
+    onPersonClick: PropTypes.func.isRequired,
+    selectedPerson: PropTypes.number
 }
 
 export default LeftSideBar;

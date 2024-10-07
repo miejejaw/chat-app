@@ -1,13 +1,14 @@
 import PropTypes from "prop-types";
 import {formatTime} from '../../utils/time_utils.js'; // Import the formatTime function
 
-const PersonList = ({ person, onPersonClick }) => {
+const PersonList = ({person, onPersonClick, selectedPerson}) => {
     const fullName = `${person.profile.first_name} ${person.profile.last_name}`;
 
     const lastMessageTime = formatTime(person.last_message.time);
 
     return (
-        <section onClick={() => onPersonClick(person.profile.id)} className='w-full flex hover:bg-light-grey hover:cursor-pointer p-2 pl-4'>
+        <section onClick={() => onPersonClick(person.profile.id)}
+                 className={`${selectedPerson === person.profile.id && 'bg-light-grey'} w-full flex hover:bg-light-grey hover:cursor-pointer p-2 pl-4`}>
             <div
                 className={`${person.profile.profile_image_url === "" && "bg-light-green text-white text-xl"} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
                 {person.profile.profile_image_url !== '' ? (
@@ -55,7 +56,8 @@ PersonList.propTypes = {
             time: PropTypes.string.isRequired
         }).isRequired
     }).isRequired,
-    onPersonClick: PropTypes.func.isRequired
+    onPersonClick: PropTypes.func.isRequired,
+    selectedPerson: PropTypes.number
 }
 
 export default PersonList;

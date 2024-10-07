@@ -56,7 +56,7 @@ const Home = () => {
 
     return (
         <div className='flex w-screen h-screen bg-cover bg-center' style={{backgroundImage: "url('/chat-background.svg')"}}>
-            <LeftSideBar onPersonClick={handlePersonClick}/>
+            <LeftSideBar onPersonClick={handlePersonClick} selectedPerson={selectedPerson}/>
 
             {
                 selectedPerson === null ?
