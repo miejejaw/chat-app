@@ -10,8 +10,8 @@ import axios from "axios";
 import WebSocketService from '../../utils/websocket.js';
 import { getFormattedDate } from '../../utils/time_utils.js';
 import React from 'react';
-import Picker from '@emoji-mart/react'; // Correct import for emoji-mart v5+
-import data from '@emoji-mart/data';    // Import emoji data
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 const Feed = ({ friend, id, messages, setMessages }) => {
     const [messageContent, setMessageContent] = useState('');
