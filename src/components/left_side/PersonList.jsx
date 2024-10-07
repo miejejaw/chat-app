@@ -17,7 +17,7 @@ const PersonList = ({ person, onPersonClick }) => {
                 )}
             </div>
 
-            <article className='pl-2 w-[270px]'>
+            <article className='pl-2 flex-grow'>
                 <div className='flex justify-between items-center'>
                     <h1 className='text-rich-black font-semibold'>{fullName}</h1>
                     <span className='text-navy-grey text-sm'>{lastMessageTime}</span>
@@ -25,11 +25,15 @@ const PersonList = ({ person, onPersonClick }) => {
 
                 <div className='flex justify-between items-center'>
                     <p className='text-navy-grey overflow-hidden whitespace-nowrap text-ellipsis'>{person.last_message.content}</p>
-                    {person.unread_count > 0 && (
-                        <span className='bg-custom-blue w-[15px] h-[15px] rounded-full text-white text-sm flex justify-center items-center'>
-                            {person.unread_count}
-                        </span>
-                    )}
+                    {
+                        person.unread_count > 0 && (
+                            <div className='bg-custom-blue min-w-5 max-w-fit rounded-full flex justify-center items-center px-1'>
+                                <span className='text-white text-sm'>
+                                    {person.unread_count}
+                                </span>
+                            </div>
+                        )
+                    }
                 </div>
             </article>
         </section>

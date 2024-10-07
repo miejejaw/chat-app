@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.custom-scrollbar::-webkit-scrollbar {
+.chat-bar-scrollbar::-webkit-scrollbar {
     width: 2px;
 }
 
@@ -12,5 +12,18 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #F7FAFC;
+}
+
+.feed-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.feed-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #808387;
+    border-radius: 10px;
+}
+
+.feed-scrollbar::-webkit-scrollbar-track {
     background-color: #F7FAFC;
 }

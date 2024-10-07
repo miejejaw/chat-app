@@ -7,10 +7,10 @@ const LeftSideBar = ({ onPersonClick }) => {
     const friends = useSelector((state) => state.friend.friends);
 
     return (
-        <section className='bg-white h-full max-w-1/4 min-w-fit'>
+        <section className='bg-white flex flex-col h-full w-2/5'>
             <SearchBar />
 
-            <div className='h-[calc(100%-64px)] overflow-y-scroll custom-scrollbar'>
+            <div className='flex-grow overflow-y-scroll chat-bar-scrollbar'>
                 {
                     Object.keys(friends).map((id) => (
                         <PersonList
