@@ -16,6 +16,7 @@ const LeftSideBar = ({onPersonClick, selectedPerson, onSearchFriendClick, select
 
     useEffect(() => {
         const fetchFriends = async () => {
+            dispatch(friendActions.clearSearchResults());
             const response = await searchUserApi(search);
             dispatch(friendActions.setSearchResults(response));
         }
