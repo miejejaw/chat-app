@@ -15,7 +15,9 @@ class WebSocketService {
 
     // Connect to the WebSocket server
     connect(userId) {
-        const wsUrl = `ws://localhost:8080/api/messages/ws?user_id=${userId}`;
+        const base_url = import.meta.env.VITE_BASE_API_URL;
+
+        const wsUrl = `${base_url}/messages/ws?user_id=${userId}`;
         this.socketRef = new WebSocket(wsUrl);
 
         this.socketRef.onopen = () => {

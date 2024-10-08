@@ -16,6 +16,8 @@ export const fetchFriends = (userId) => async (dispatch) => {
 
 // Transform the friends list data
 const transformFriendsList = (friends) => {
+    if (!friends) return {};
+
     const result = {};
     friends.forEach(item => {
         const friendId = item.profile.id;
