@@ -9,13 +9,16 @@ import {friendActions} from "../features/friends/friendSlice.js";
 
 const Home = () => {
     const [selectedPerson, setSelectedPerson] = useState(null);
+    const [selectedSearchFriend, setSelectedSearchFriend] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
-    const[messages, setMessages] = useState([]);
+
 
     const userData = useSelector((state) => state.user.profile);
     const friends = useSelector((state) => state.friend.friends);
+    const messages = useSelector((state) => state.friend.messages);
+    const filteredFriends = useSelector((state) => state.friend.searchResults);
 
     if (!userData) {
         return <div>Loading user data...</div>;
@@ -28,7 +31,7 @@ const Home = () => {
 
     // Fetch friends list
     useEffect(() => {
-        dispatch(fetchFriends(userData.id))
+        dispatch(fetchFriends())
             .then(() => setLoading(false))
             .catch((err) => setError(err.message));
 
@@ -37,12 +40,13 @@ const Home = () => {
     }, [userData.id]);
 
     // listen for new messages
-        const wsService = WebSocketService.getInstance();
+    const wsService = WebSocketService.getInstance();
 
-        wsService.addCallbacks(userData.id, (newMessage) => {
-            setMessages((prevMessages) => [newMessage,...prevMessages]);
-            dispatch(friendActions.updateFriendLastMessage(newMessage));
-        });
+    wsService.addCallbacks(userData.id, (newMessage) => {
+        dispatch(friendActions.updateFriendLastMessage(newMessage));
+        dispatch(friendActions.addMessage(newMessage));
+    });
+
 
 
     // Conditional rendering for loading and error states
@@ -56,17 +60,27 @@ const Home = () => {
 
     return (
         <div className='flex w-screen h-screen bg-cover bg-center' style={{backgroundImage: "url('/chat-background.svg')"}}>
-            <LeftSideBar onPersonClick={handlePersonClick} selectedPerson={selectedPerson}/>
+            <LeftSideBar
+                onPersonClick={handlePersonClick}
+                selectedPerson={selectedPerson}
+                onSearchFriendClick={setSelectedSearchFriend}
+                selectedSearchFriend={selectedSearchFriend}
+            />
 
             {
-                selectedPerson === null ?
-                    <div className='w-full h-full bg-opacity-85 bg-iceberg-blue flex justify-center items-center text-lg text-white'>Select a person to chat</div> :
+                selectedSearchFriend ?
                     <Feed
-                        friend={friends[selectedPerson]}
-                        id={friends[selectedPerson].profile.id}
-                        messages={messages}
-                        setMessages={setMessages}
-                    />
+                        friend={filteredFriends[selectedSearchFriend]}
+                        id={filteredFriends[selectedSearchFriend].profile.id}
+                        messages={messages[selectedSearchFriend]}
+                    /> : selectedPerson === null ?
+                    <div className='w-full h-full bg-opacity-85 bg-iceberg-blue flex justify-center items-center text-lg text-white'>Select a person to chat</div> :
+                        <Feed
+                            friend={friends[selectedPerson]}
+                            id={friends[selectedPerson].profile.id}
+                            messages={messages[selectedPerson]}
+                        />
+
             }
         </div>
     );

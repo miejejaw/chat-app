@@ -2,6 +2,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import PropTypes from "prop-types";
 import {formatTime} from '../../utils/time_utils.js';
 import {useSelector} from "react-redux";
+import ProfilePic from "../ProfilePic.jsx";
 
 
 const ChatMessage = ({message, friendProfile, same}) => {
@@ -16,14 +17,11 @@ const ChatMessage = ({message, friendProfile, same}) => {
 
             {/* For other user's message, display profile pic on the left */}
             {!isSelf && !same && (
-                <div
-                    className={`${friendProfile.profile_image_url === "" ? "bg-light-green text-white text-xl" : ""} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
-                    {friendProfile.profile_image_url !== "" ? (
-                        <img src={friendProfile.profile_image_url} alt="profile" className="w-full"/>
-                    ) : (
-                        `${friendProfile.first_name[0]}${friendProfile.last_name[0]}`
-                    )}
-                </div>
+                <ProfilePic
+                    profile_url={friendProfile.profile_image_url}
+                    first_name={friendProfile.first_name}
+                    last_name={friendProfile.last_name}
+                />
             )}
 
             {/* Message bubble */}
@@ -53,7 +51,7 @@ const ChatMessage = ({message, friendProfile, same}) => {
                     {currentUser.profile_image_url !== "" ? (
                         <img src={currentUser.profile_image_url} alt="profile" className="w-full"/>
                     ) : (
-                        `${currentUser.first_name[0]}${currentUser.last_name[0]}`
+                        `${currentUser.first_name[0].toUpperCase()}${currentUser.last_name[0].toUpperCase()}`
                     )}
                 </div>
             )}

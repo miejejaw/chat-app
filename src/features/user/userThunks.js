@@ -1,6 +1,5 @@
-// features/user/userThunks.js
 import { setUserProfile, clearUserProfile } from './userSlice';
-import { getUserProfileApi } from './userApi'; // Assume you have a userApi to fetch user details
+import {getUserProfileApi} from './userApi';
 
 // Thunk for fetching user profile
 export const fetchUserProfile = () => async (dispatch) => {
