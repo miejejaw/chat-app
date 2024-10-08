@@ -1,7 +1,8 @@
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import PropTypes from "prop-types";
 
-const SearchBar = () => {
+const SearchBar = ({search, handleSearch}) => {
     return (
         <section className="w-full h-16 px-2 flex justify-center items-center">
             {/* Menu Icon */}
@@ -13,10 +14,17 @@ const SearchBar = () => {
                 <input
                     className="outline-none bg-transparent text-navy-grey flex-grow"
                     placeholder="Search"
+                    value={search}
+                    onChange={(e) => handleSearch(e.target.value)}
                 />
             </div>
         </section>
     );
 };
+
+SearchBar.propTypes = {
+    search: PropTypes.string.isRequired,
+    handleSearch: PropTypes.func.isRequired,
+}
 
 export default SearchBar;

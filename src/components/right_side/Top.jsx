@@ -3,20 +3,18 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import PropTypes from "prop-types";
 import {formatTime} from "../../utils/time_utils.js";
+import ProfilePic from "../ProfilePic.jsx";
 
-const Top = ({ person }) => {
+const Top = ({person}) => {
     const lastSeenTime = formatTime(person.last_seen);
     return (
         <section className='bg-white py-2 px-10 border-l-2 flex justify-between'>
             <div className='flex'>
-                <div
-                    className={`${person.profile.profile_image_url === "" && "bg-light-green text-white text-xl"} w-[50px] h-[50px] rounded-full font-bold flex justify-center items-center`}>
-                    {person.profile.profile_image_url !== '' ? (
-                        <img src={person.profile.profile_image_url} alt='profile' className='w-full' />
-                    ) : (
-                        person.profile.first_name[0] + person.profile.last_name[0]
-                    )}
-                </div>
+                <ProfilePic
+                    profile_url={person.profile.profile_image_url}
+                    first_name={person.profile.first_name}
+                    last_name={person.profile.last_name}
+                />
 
                 <article className='ml-2 w-[280px]'>
                     <div className='flex justify-between'>

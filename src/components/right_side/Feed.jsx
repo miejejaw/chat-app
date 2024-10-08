@@ -12,12 +12,17 @@ import { getFormattedDate } from '../../utils/time_utils.js';
 import React from 'react';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
+import {headers} from "../../features/auth/authApi.js";
+import {friendActions} from "../../features/friends/friendSlice.js";
+import {useDispatch} from "react-redux";
 
-const Feed = ({ friend, id, messages, setMessages }) => {
+const Feed = ({friend, id, messages}) => {
     const [messageContent, setMessageContent] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const emojiPickerRef = useRef(null); // Reference for emoji picker
-    const messagesEndRef = useRef(null); // Ref for scrolling
+    const emojiPickerRef = useRef(null);
+    const messagesEndRef = useRef(null);
+    const dispatch = useDispatch();
+
 
     const wsService = WebSocketService.getInstance();
 
@@ -26,7 +31,7 @@ const Feed = ({ friend, id, messages, setMessages }) => {
         if (content === '') return;
 
         const message = {
-            receiver_id: friend.profile.id,
+            receiver_id: id,
             content: content,
         };
 
@@ -71,15 +76,17 @@ const Feed = ({ friend, id, messages, setMessages }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${base_url}/messages/friend/chats?user_id=${id}`);
-                setMessages(response.data);
+                console.log("Fetching messages for user: ", id);
+                const response = await axios.get(`${base_url}/messages/friend/chats?user_id=${id}`, {headers});
+                // setMessages({friendId:id, messages:response.data});
+                dispatch(friendActions.setMessages({friendId: id, messages: response.data}));
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
         };
 
         fetchData();
-    }, [base_url]);
+    }, [id]);
 
     // Keydown event listener for "Enter" to send a message
     useEffect(() => {
@@ -97,7 +104,6 @@ const Feed = ({ friend, id, messages, setMessages }) => {
         };
     }, [messageContent]);
 
-
     return (
         <section className='w-full h-full bg-opacity-85 bg-iceberg-blue flex flex-col'>
             {/* Top section */}
@@ -109,7 +115,7 @@ const Feed = ({ friend, id, messages, setMessages }) => {
                 <div ref={messagesEndRef}/>
 
                 {
-                    messages.map((message, i) => {
+                    messages && messages.map((message, i) => {
                         const isSameUser = i > 0 && messages[i - 1].is_self === message.is_self;
 
                         const getDateOnly = (timeString) => new Date(timeString).toISOString().substring(0, 10);
@@ -195,7 +201,6 @@ Feed.propTypes = {
     id: PropTypes.number.isRequired,
     friend: PropTypes.object.isRequired,
     messages: PropTypes.array.isRequired,
-    setMessages: PropTypes.func.isRequired,
 };
 
 export default Feed;

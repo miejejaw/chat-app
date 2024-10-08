@@ -2,9 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 
 const initialState = {
-    accessToken: Cookies.get('authToken') || null,
+    accessToken: Cookies.get('accessToken') || null,
     refreshToken: Cookies.get('refreshToken') || null,
-    isAuthenticated: !!Cookies.get('authToken'),
+    isAuthenticated: !!Cookies.get('accessToken'),
 };
 
 const authSlice = createSlice({
@@ -17,7 +17,7 @@ const authSlice = createSlice({
             state.isAuthenticated = true;
 
             // Store tokens in cookies
-            Cookies.set('authToken', action.payload.access_token, { expires: 7 });
+            Cookies.set('accessToken', action.payload.access_token, {expires: 7});
             Cookies.set('refreshToken', action.payload.refresh_token, { expires: 30 });
         },
         logout: (state) => {
@@ -26,12 +26,12 @@ const authSlice = createSlice({
             state.isAuthenticated = false;
 
             // Remove tokens from cookies
-            Cookies.remove('authToken');
+            Cookies.remove('accessToken');
             Cookies.remove('refreshToken');
         },
         refreshTokenSuccess: (state, action) => {
             state.accessToken = action.payload.token;
-            Cookies.set('authToken', action.payload.token, { expires: 7 });
+            Cookies.set('accessToken', action.payload.token, {expires: 7});
         },
     },
 });
