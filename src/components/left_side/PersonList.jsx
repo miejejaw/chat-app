@@ -23,18 +23,21 @@ const PersonList = ({person, onPersonClick, selectedPerson}) => {
                 </div>
 
                 {/*Display the last message content and unread count*/}
-                {person.last_message && <div className='flex justify-between items-center'>
-                    <p className='text-navy-grey overflow-hidden whitespace-nowrap text-ellipsis'>{person.last_message.content}</p>
-                    {
-                        person.unread_count > 0 && (
-                            <div className='bg-custom-blue min-w-5 max-w-fit rounded-full flex justify-center items-center px-1'>
-                                <span className='text-white text-sm'>
-                                    {person.unread_count}
-                                </span>
-                            </div>
-                        )
-                    }
-                </div>}
+                {
+                    person.last_message && <div className='flex justify-between items-center'>
+                        <p className='text-navy-grey overflow-hidden whitespace-nowrap text-ellipsis'>{person.last_message.content}</p>
+                        {
+                            person.last_message && person.unread_count > 0 && (
+                                <div
+                                    className='bg-custom-blue min-w-5 max-w-fit rounded-full flex justify-center items-center px-1'>
+                                    <span className='text-white text-sm'>
+                                        {person.unread_count}
+                                    </span>
+                                </div>
+                            )
+                        }
+                    </div>
+                }
 
                 {/*display username*/}
                 {!person.last_message && <p className='text-blue-400'>@{person.profile.username}</p>}
