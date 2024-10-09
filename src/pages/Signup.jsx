@@ -139,7 +139,7 @@ const Signup = () => {
                     </form>
 
                     <p className="mt-4 text-center text-gray-600">
-                        I have an account? <a href="#" className="text-dark-purple font-semibold">Login</a>
+                        I have an account? <a href="/" className="text-dark-purple font-semibold">Login</a>
                     </p>
 
                     <div className="flex justify-center mt-4">
