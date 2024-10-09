@@ -25,7 +25,7 @@ const Login = () => {
         try {
             // Await the dispatch to handle the promise correctly
             await dispatch(login(username, password));
-            navigate('/');
+            navigate('/chat');
         } catch (err) {
             console.error(err);
             setError('Login failed. Please check your credentials.');
@@ -79,7 +79,7 @@ const Login = () => {
                         </button>
                     </form>
                     <p className="mt-4 text-center text-gray-600">
-                        Don't have an account? <a href="#" className="text-dark-purple font-semibold">Register</a>
+                        Don't have an account? <a href="/signup" className="text-dark-purple font-semibold">Register</a>
                     </p>
 
                     <div className="flex justify-center mt-4">
